@@ -11,4 +11,7 @@ on making tests just to have tests, but from structure point of view everything 
 Another topic - structure. Some things I'd refactor after I finish, but that's something that can't be done good in short period of time.
 
 
-Thank you for nice and unusual assigmenе
+Thank you for nice and unusual assigment
+
+
+upd after submissions - found what's wrong with filters - misunderstood at first statuses, they should be different
