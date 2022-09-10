@@ -12,17 +12,22 @@ export const useMoonCalendar = () => {
   const dispatch = useAppDispatch();
   const launchPage = useAppSelector((state) => state.lauches);
   const selectedDate = useAppSelector((state) => state.lauches.selectedDate);
+  const includeFailed = useAppSelector((state) => state.lauches.includeFailed);
+  const includeSuccess = useAppSelector((state) => state.lauches.includeSuccessful);
 
   const padsLocations = useMemo(() => launchPage.launches?.results
     .map((launch) => ({
       lat: launch.pad.latitude, lng: launch.pad.longitude, size: Math.random() / 3, color: 'red', id: launch.id,
     })), [launchPage]);
+
   const selectLaunchAction = useCallback((id: string) => {
     dispatch(selectLaunch(id));
   }, [dispatch]);
+
   useEffect(() => {
-    dispatch(fetchLaunches({ selectedDate }));
-  }, [dispatch, selectedDate]);
+    dispatch(fetchLaunches({ selectedDate, includeSuccess, includeFailed }));
+  }, [dispatch, selectedDate, includeFailed, includeSuccess]);
+
   return { values: { padsLocations }, operations: { selectLaunchAction } };
 };
 

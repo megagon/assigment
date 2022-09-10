@@ -9,6 +9,8 @@ export interface LaunchesState {
   selectedDate: { from: Date, to: Date },
   status: 'loading' | 'idle' | 'error',
   selectedLaunch: string,
+  includeFailed: boolean,
+  includeSuccessful: boolean,
 }
 
 const initialState: LaunchesState = {
@@ -16,6 +18,8 @@ const initialState: LaunchesState = {
   selectedDate: { from: startOfDay(new Date()), to: endOfDay(addMonths(new Date(), 3)) },
   status: 'idle',
   selectedLaunch: '',
+  includeFailed: true,
+  includeSuccessful: true,
 };
 
 export const fetchLaunches = createAsyncThunk(
@@ -37,6 +41,12 @@ export const launchesSlice = createSlice({
     selectLaunch: (state, action: PayloadAction<string>) => {
       state.selectedLaunch = action.payload;
     },
+    toggleIncludeFaled: (state) => {
+      state.includeFailed = !state.includeFailed;
+    },
+    toggleIncludeSuccessful: (state) => {
+      state.includeSuccessful = !state.includeSuccessful;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -45,10 +55,13 @@ export const launchesSlice = createSlice({
         state.launches = null;
       })
       .addCase(fetchLaunches.fulfilled, (state, action) => {
-        state.status = 'idle';
-        state.launches = action.payload;
-        state.selectedLaunch = [...action.payload.results].sort((a, b) => (
-          isAfter(new Date(a.window_start), new Date(b.window_start)) ? 0 : 1))[0].id;
+        if (!action.payload.results.length) state.status = 'error';
+        else {
+          state.status = 'idle';
+          state.launches = action.payload;
+          state.selectedLaunch = [...action.payload.results].sort((a, b) => (
+            isAfter(new Date(a.window_start), new Date(b.window_start)) ? 0 : 1))[0].id;
+        }
       })
       .addCase(fetchLaunches.rejected, (state) => {
         state.status = 'error';
@@ -56,6 +69,8 @@ export const launchesSlice = createSlice({
   },
 });
 
-export const { selectDate, selectLaunch } = launchesSlice.actions;
+export const {
+  selectDate, selectLaunch, toggleIncludeFaled, toggleIncludeSuccessful,
+} = launchesSlice.actions;
 
 export const launchesReducer = launchesSlice.reducer;

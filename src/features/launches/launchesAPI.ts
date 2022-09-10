@@ -23,16 +23,29 @@ export type LaunchPage = {
 
 export type FetchLaunchesApiArgs = {
   selectedDate: RootState['lauches']['selectedDate'];
+  includeFailed: boolean,
+  includeSuccess: boolean
 };
 export type ThespacedevsParams = {
   window_start__gte: string,
   window_end__lte: string,
   limit: string,
+  status: string,
 };
-export async function fetchLaunchesApi({ selectedDate }: FetchLaunchesApiArgs) {
+const getStatus = (fail: boolean, success: boolean) => {
+  if (fail && success) return '';
+  if (success && !fail) return '3';
+  if (fail && !success) return '4';
+  return '';
+};
+export async function fetchLaunchesApi({
+  selectedDate,
+  includeFailed, includeSuccess,
+}: FetchLaunchesApiArgs) {
   const args: ThespacedevsParams = {
     window_start__gte: selectedDate.from.toISOString(),
     window_end__lte: selectedDate.to.toISOString(),
+    status: getStatus(includeFailed, includeSuccess),
     limit: DEFAULT_PAGE_SIZE,
   };
   const launches: LaunchPage = await (await fetch(getUrl('launch', args))).json();
