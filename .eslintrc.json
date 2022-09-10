@@ -1,0 +1,26 @@
+{
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:react/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "import",
+    "jest"
+  ],
+  "rules": {
+    "import/prefer-default-export": 0,
+    "import/no-cycle": 0,
+    "no-param-reassign": 0
+  }
+
+}
